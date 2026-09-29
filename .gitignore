@@ -1,0 +1,26 @@
+node_modules/
+.env
+data/
+pc-files/
+mobile/.expo/
+mobile/dist/
+*.log
+mobile/ios/Pods/
+mobile/ios/build/
+mobile/ios/.xcode.env.local
+mobile/android/.gradle/
+mobile/android/app/build/
+
+# Personal configuration, runtime output and signing material
+.DS_Store
+.env.*
+!.env.example
+mobile/src/personal-connection.json
+design-validation/
+*.jsbundle
+*.ipa
+*.p12
+*.p8
+*.mobileprovision
+*.xcarchive/
+*.xcresult/

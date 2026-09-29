@@ -1,0 +1,12 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const os = require('node:os');
+const root = path.resolve(__dirname, '..');
+const envFile = path.join(root, '..', '.env');
+const env = fs.existsSync(envFile) ? Object.fromEntries(fs.readFileSync(envFile, 'utf8').split(/\r?\n/).filter(line => /^[A-Z_]+=/.test(line)).map(line => { const i = line.indexOf('='); return [line.slice(0, i), line.slice(i + 1).trim().replace(/^(['"])(.*)\1$/, '$2')]; })) : {};
+const addresses = Object.values(os.networkInterfaces()).flat().filter(a => a && a.family === 'IPv4' && !a.internal && !a.address.startsWith('169.254.'));
+const lan = addresses.find(a => /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(a.address));
+const url = process.env.JARVIS_MOBILE_URL || env.JARVIS_MOBILE_URL || (lan ? `http://${lan.address}:${env.PORT || 8787}` : '');
+if (!url || !env.APP_TOKEN) throw new Error('프로젝트 루트에서 npm run setup을 먼저 실행하고 Mac을 Wi-Fi에 연결하세요.');
+fs.writeFileSync(path.join(root, 'src/personal-connection.json'), JSON.stringify({url, token: env.APP_TOKEN}, null, 2) + '\n', {mode: 0o600});
+console.log(`개인 앱 기본 연결 설정 완료: ${url} (토큰 값은 출력하지 않습니다.)`);
